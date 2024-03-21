@@ -9,3 +9,47 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+// Définition du modèle pour la table Apprenant
+model Apprenant {
+  Id                Int      @id @default(autoincrement())
+  Matricule         String   @unique
+  Tag_Ordinateur    String
+  Code_Cohorte      String
+  Prenom            String
+  Nom               String
+  Postnom           String
+  Date_de_naissance DateTime
+  Adresse           String
+  Email             String
+  Telephone         String
+
+  Ordinateur Ordinateur @relation(fields: [Tag_Ordinateur], references: [Tag])
+  Cohorte    Cohorte    @relation(fields: [Code_Cohorte], references: [Code])
+}
+
+// Définition du modèle pour la table Ordinateur
+model Ordinateur {
+  Tag        String      @unique
+  Modele     String
+  Fabriquant String
+  Apprenant  Apprenant[]
+}
+
+// Définition du modèle pour la table Session
+model Session {
+  Id      String    @id @unique
+  Annee   DateTime
+  Type    String
+  Ville   String
+  Cohorte Cohorte[]
+}
+
+// Définition du modèle pour la table Cohorte
+model Cohorte {
+  Code        String         @id @unique
+  Id_Session  String
+  Description String
+  Session     Session     @relation(fields: [Id_Session], references: [Id])
+  Apprenant   Apprenant[]
+}
